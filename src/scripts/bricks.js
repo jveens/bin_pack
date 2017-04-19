@@ -1,14 +1,40 @@
 const app = {};
 
-app.grid = document.querySelector('#grid');
+app.init = function(){
+	app.sliders.forEach(slide => {
+		slide.addEventListener('mousemove', app.updateValues);
+		slide.addEventListener('change', app.updateValues);
+	});
+
+	app.gridSetup.addEventListener('submit', function(event){
+		event.preventDefault();	
+		app.brickster(app.bricks, app.cols, true);
+	});
+
+	app.brickster(app.bricks, app.cols, false);
+
+	window.addEventListener('resize', function(event){
+
+		clearTimeout(app.resizeTimer);
+		app.resizeTimer = setTimeout(function() {
+
+			// Run code here, resizing has "stopped"
+			app.resizeGrid();
+		        
+		}, 500);
+
+	});
+}
+
+// app.grid = document.querySelector('#grid');
 app.sliders = document.querySelectorAll('input[type="range"]');
 app.gridSetup = document.querySelector('#grid-setup');
 app.body = document.querySelector('body');
-
-const trigger = document.querySelector('[data-trigger-more]');
-
 app.bricks = document.querySelector('#bricks').value;
 app.cols = document.querySelector('#cols').value;
+app.placedBlocks = [];
+app.gridItemLength = 0;
+app.currentColumns;
 app.resizeTime;
 
 app.parts = [
@@ -51,12 +77,15 @@ app.brickster = function(number, columns, clear) {
 
 	const blocks = app.getBlocks(number);
 	const completedRows = [];
+	const grid = document.querySelector('#grid');
 	let currentRow = 0;
 	let nextRow = 0;
 	let gridDimensions = false;
-	let gridItemLength = 0;
 	let changed = false;
+	app.currentColumns = columns;
 
+	grid.innerHTML = '';
+	app.placedBlocks = [];
 
 	function getNewRow(){
 
@@ -71,9 +100,12 @@ app.brickster = function(number, columns, clear) {
 
 
 	function createDOMItem(block){
+
 		const gridItem = document.createElement('div');
 		gridItem.classList.add(block.className, 'grid-item');
 		gridItem.style.width = ((100 / columns) * block.width ) + '%';
+		gridItem.setAttribute('data-width', block.width);
+		gridItem.setAttribute('data-height', block.height);
 
 		return gridItem;
 	}
@@ -102,19 +134,31 @@ app.brickster = function(number, columns, clear) {
 
 		gridDimensions = true;
 
+		gridItem.setAttribute('offset-x', 0);
+		gridItem.setAttribute('offset-y', 0);
+
+		app.placedBlocks.push(gridItem);
+
+		gridItem.style.top = 0;
+		gridItem.style.left = 0;
+
 		grid.appendChild(gridItem);
 
-		gridItemLength = gridItem.offsetWidth / block.width;
-
 		// Grid is square-based, we only need length of 1 side
-		return gridItemLength;
+		app.gridItemLength = gridItem.offsetWidth / block.width;
 
 	};
 
 	function brickLayer(gridItem, itemPosition) {
 
-		gridItem.style.top = completedRows.length * gridItemLength + 'px';
-		gridItem.style.left = itemPosition * gridItemLength + 'px';
+		gridItem.setAttribute('offset-x', itemPosition);
+		gridItem.setAttribute('offset-y', completedRows.length);
+
+		gridItem.style.top = completedRows.length * app.gridItemLength + 'px';
+		gridItem.style.left = itemPosition * app.gridItemLength + 'px';
+
+		app.placedBlocks.push(gridItem);
+
 		grid.appendChild(gridItem);
 
 	}
@@ -172,11 +216,6 @@ app.brickster = function(number, columns, clear) {
 
 	}
 
-
-	if (clear) {
-		grid.innerHTML = '';
-	}
-
 	function fitBricks( blocks ) {
 
 		if ( blocks.length > 0 ) {
@@ -221,12 +260,10 @@ app.brickster = function(number, columns, clear) {
 		}
 
 		// set grid container height based on completed rows 
-		app.grid.style.height = (completedRows.length + 2) * gridItemLength + 'px';
+		grid.style.height = (completedRows.length + 2) * app.gridItemLength + 'px';
 		return blocks;
 
-	} // end fitBricks
-
-	// fitBricks( blocks );
+	}
 
 	while( blocks.length > 1 ) {
 
@@ -245,40 +282,31 @@ app.updateValues = function(){
 	output.innerHTML = this.id === 'gutters' ? this.value + 'px' : this.value;
 }
 
-app.sliders.forEach(slide => {
-	slide.addEventListener('mousemove', app.updateValues);
-	slide.addEventListener('change', app.updateValues);
-});
+app.resizeGrid = function(){
 
-app.gridSetup.addEventListener('submit', function(event){
-	event.preventDefault();	
-	app.brickster(app.bricks, app.cols, true);
-});
+	// we need to get our new grid length after resize
+	const item = app.placedBlocks[0];
+	const itemX = item.getAttribute('data-width');
+	let newGridLength = item.offsetWidth / itemX;
 
-app.brickster(app.bricks, app.cols, false);
+	app.placedBlocks.forEach( (item, i) => {
 
-// function debounce(func, wait = 20, immediate = true) {
-//   var timeout;
-//   return function() {
-//     var context = this, args = arguments;
-//     var later = function() {
-//       timeout = null;
-//       if (!immediate) func.apply(context, args);
-//     };
-//     var callNow = immediate && !timeout;
-//     clearTimeout(timeout);
-//     timeout = setTimeout(later, wait);
-//     if (callNow) func.apply(context, args);
-//   };
-// };
+		let offsetX = parseInt(item.getAttribute('offset-x'));
+		let offsetY = parseInt(item.getAttribute('offset-y'));
 
-window.addEventListener('resize', function(event){
 
-	clearTimeout(app.resizeTimer);
-	app.resizeTimer = setTimeout(function() {
+		if (offsetX != 0){
+			item.style.left = (newGridLength * offsetX) + 'px';
+		}
 
-    // Run code here, resizing has "stopped"
-    app.brickster(app.bricks, app.cols, true);
-            
-  }, 250);
+		if (offsetY != 0){
+			item.style.top = (newGridLength * offsetY) + 'px';
+		}
+	});
+
+	app.gridItemLength = newGridLength;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  app.init();
 });

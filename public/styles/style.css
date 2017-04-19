@@ -210,7 +210,8 @@ output {
   display: block; }
 
 .grid-item {
-  position: absolute; }
+  position: absolute;
+  transition: all 0.15s ease-in-out; }
   .grid-item:after {
     content: '';
     display: block;
