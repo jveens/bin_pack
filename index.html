@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Brickister.js</title>
 	<link rel="stylesheet" href="./public/styles/style.css">
+	<style id="grid-style"></style>
 </head>
 <body>
 	<h1 class="title-main">Brick by Brick</h1>
@@ -17,19 +18,13 @@
 			</div>
 			<div class="form-group">
 				<label for="bricks">Bricks</label>
-				<input type="range" id="bricks" min="10" value="30" max="100" step="10">
-				<output for="bricks">30</output>
-			</div>
-			<div class="form-group">
-				<label for="weight">Gutters</label>
-				<input type="range" id="gutters" min="0" value="5" max="10" step="1">
-				<output for="gutters">5px</output>
+				<input type="range" id="bricks" min="10" value="50" max="100" step="10">
+				<output for="bricks">50</output>
 			</div>
 		</div>
 		<button class="button more-trigger" type="submit">Stack 'Em</button>
 	</form>
-	<div id="grid"></div>
-	<button class="button more-trigger" data-trigger-more>More Bricks!</button>
+	<div id="grid" class="clearfix"></div>
 	<script src="./public/scripts/brick.js" ></script>
 </body>
 </html>

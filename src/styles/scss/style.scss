@@ -87,19 +87,14 @@ output {
 }
 
 #grid {
-	display: grid;
-	/* need to make these values dynamic so we can change col numbers */
-	grid-template-columns: repeat(4, 1fr);
-	grid-template-rows: repeat(10, 1fr);
-	grid-column-gap: 5px;
-	grid-row-gap: 5px;
-	justify-items: stretch;
-	align-items: stretch;
+	position: relative;
 	width: 100%;
 	min-height: 100vh;
-	grid-auto-flow: dense;
+	display: block;
 }
 .grid-item {
+	position: absolute;
+
 	&:after {
 		content: '';
 		display: block;
@@ -108,7 +103,7 @@ output {
 }
 
 .one-one {
-	grid-area: span 1 / span 1;
+	// grid-area: span 1 / span 1;
 	background-color: $red;
 	background-image: linear-gradient(48deg, $red, $pink);
 
@@ -119,7 +114,7 @@ output {
 
 .two-one {
 	background-color: green;
-	grid-area: span 2 / span 1;
+	// grid-area: span 2 / span 1;
 	background-image: linear-gradient(-110deg, $green, $yellow);
 
 	&:after {
@@ -129,17 +124,17 @@ output {
 
 .one-two {
 	background-color: orange;
-	grid-area: span 1 / span 2;
+	// grid-area: span 1 / span 2;
 	background-image: linear-gradient(-160deg, $blue, $purple);
 
 	&:after {
-		padding-bottom: calc(50% - 10px);
+		padding-bottom: 50%;
 	}
 }
 
 .two-two {
 	background-color: purple;
-	grid-area: span 2 / span 2;
+	// grid-area: span 2 / span 2;
 	background-image: linear-gradient(20deg, $purple, $pink);
 
 	&:after {
