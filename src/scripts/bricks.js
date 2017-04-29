@@ -85,6 +85,8 @@ app.brickster = function(number, columns, clear) {
 	let changed = false;
 	app.currentColumns = columns;
 
+	document.querySelector('body').style.padding = app.gutters + 'px';
+
 	grid.innerHTML = '';
 	app.placedBlocks = [];
 
@@ -105,6 +107,8 @@ app.brickster = function(number, columns, clear) {
 		const gridItem = document.createElement('div');
 		gridItem.classList.add(block.className, 'grid-item');
 		gridItem.style.width = ((100 / columns) * block.width ) + '%';
+		gridItem.style.outline = `${app.gutters}px solid white`;
+		gridItem.style.outlineOffset = `-${app.gutters}px`;
 		gridItem.setAttribute('data-width', block.width);
 		gridItem.setAttribute('data-height', block.height);
 
