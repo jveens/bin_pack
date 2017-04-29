@@ -32,6 +32,7 @@ app.gridSetup = document.querySelector('#grid-setup');
 app.body = document.querySelector('body');
 app.bricks = document.querySelector('#bricks').value;
 app.cols = document.querySelector('#cols').value;
+app.gutters = document.querySelector('#gutters').value;
 app.placedBlocks = [];
 app.gridItemLength = 0;
 app.currentColumns;
@@ -277,6 +278,7 @@ app.updateValues = function(){
 
 	app.bricks = document.querySelector('#bricks').value;
 	app.cols = document.querySelector('#cols').value;
+	app.gutters = document.querySelector('#gutters').value;
 
 	const output = document.querySelector(`output[for="${this.id}"]`);
 	output.innerHTML = this.id === 'gutters' ? this.value + 'px' : this.value;
